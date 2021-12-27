@@ -21,9 +21,11 @@ func HandlePostEncodeUrl(w http.ResponseWriter, r *http.Request) {
 	decodeRequestError := decodeRequest(r, &url)
 	if decodeRequestError != nil {
 		log.Println("Invalid request")
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	response := encodeUrlAndStore(url)
-	utilities.EncodeResponse(r, w, response)
+	w.WriteHeader(http.StatusCreated)
+	utilities.EncodeResponse(r, w, &response)
 	fmt.Println("Completed processing of HandlePostEncodeUrl")
 }
