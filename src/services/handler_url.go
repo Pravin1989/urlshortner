@@ -24,7 +24,12 @@ func HandlePostEncodeUrl(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	response := encodeUrlAndStore(url)
+	response, writeErr := encodeUrlAndStore(url)
+	if writeErr != nil {
+		log.Println("Failed to write to file")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusCreated)
 	utilities.EncodeResponse(r, w, &response)
 	fmt.Println("Completed processing of HandlePostEncodeUrl")
