@@ -15,6 +15,7 @@ var (
 	encodeUrlAndStore = models.EncodeUrlAndStore
 )
 
+// This is POST API method to create short url of long
 func HandlePostEncodeUrl(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Started processing of HandlePostEncodeUrl")
 	var url entity.URL

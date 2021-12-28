@@ -23,8 +23,8 @@ var (
 	}
 )
 
+// This method encode URL and store inside file
 func EncodeUrlAndStore(input entity.URL) (string, error) {
-	// value, isExist := urlsMap[input.URL]
 	urlsMap, readErr := ReadFromFile()
 	if readErr != nil {
 		return "", readErr
@@ -41,6 +41,7 @@ func EncodeUrlAndStore(input entity.URL) (string, error) {
 	return baseURL + encodedValueToStore, nil
 }
 
+// This method encode URL
 func Encode(input entity.URL) string {
 	hasher := sha1.New()
 	hasher.Write([]byte(input.URL))
@@ -48,6 +49,7 @@ func Encode(input entity.URL) string {
 	return encodedValue[0:6]
 }
 
+// This method write to file
 func WriteToFile(data map[string]string) error {
 	file, fileCreateError := os.Create(filename)
 	if fileCreateError != nil {
@@ -69,6 +71,7 @@ func WriteToFile(data map[string]string) error {
 	return nil
 }
 
+// This method read from file
 func ReadFromFile() (map[string]string, error) {
 	data, readError := readFile(filename)
 	myMap := make(map[string]string)

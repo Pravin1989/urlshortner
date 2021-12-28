@@ -17,6 +17,7 @@ var (
 	handlePostEncodeUrl = handlers.HandlePostEncodeUrl
 )
 
+//This method add routes and start server
 func Start() {
 	router := loadRoutes()
 	log.Println("Starting REST Server")
@@ -25,12 +26,14 @@ func Start() {
 	fmt.Println("Server Crashed", err)
 }
 
+//Creates router
 func loadRoutes() *mux.Router {
 	serviceRouter := mux.NewRouter().PathPrefix("/urlshortner/api").Subrouter()
 	registerApiRoutes(serviceRouter)
 	return serviceRouter
 }
 
+//Regiter API methods inside router
 func registerApiRoutes(r *mux.Router) {
 	r.HandleFunc("/create", handlePostEncodeUrl).Methods(http.MethodPost)
 }
