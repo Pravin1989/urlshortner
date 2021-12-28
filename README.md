@@ -25,6 +25,6 @@ $ run the .exe file
 
 ## API Details
 * Endpoint : http://localhost:8090/urlshortner/api/create
-* Http Method Type : **POST**
+* Http Method : **POST**
 * Input Payload : `{"url":"https://test.com/generate/generate-tinyurl"}`
 * Sample Response : `"http://urlshortner.com/dmNRbq"`
