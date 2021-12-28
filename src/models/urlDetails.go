@@ -60,12 +60,11 @@ func WriteToFile(data map[string]string) error {
 		fmt.Println(err.Error())
 		return err
 	}
-	n, writeError := file.WriteString(string(userData))
+	_, writeError := file.WriteString(string(userData))
 	if writeError != nil {
 		log.Printf("failed writing to file: %v", writeError)
 		return writeError
 	}
-	fmt.Println("Length :", n)
 	defer file.Close()
 	return nil
 }

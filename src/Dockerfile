@@ -1,21 +1,21 @@
 FROM golang:latest
 
 # Set the Current Working Directory inside the container
-WORKDIR /go/src/github.com/urlshortner
+WORKDIR /urlshortner-service
 
 # Copy go mod and sum files
 COPY go.mod go.sum ./
 
-# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+# Download all dependencies.
 RUN go mod download
 
 # Copy the source from the current directory to the Working Directory inside the container
-COPY . ./
+COPY . .
 
 EXPOSE 8080
 
 # Build the Go app
-RUN go build -o urlshortner-service ./src/
+RUN go build -o urlshortner ./src/
 
 # Command to run the executable
-ENTRYPOINT [ "/go/src/github.com/urlshortner/urlshortner-service" ]
+ENTRYPOINT [ "/urlshortner-service/urlshortner" ]

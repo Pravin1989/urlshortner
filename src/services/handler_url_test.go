@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"os"
 	"testing"
@@ -22,8 +23,14 @@ func TestHandlePostEncodeUrl(t *testing.T) {
 	t.Run("CreateShortenUrlSuccess", func(t *testing.T) {
 		tests.ExecuteAndParseJSON(t, router, http.MethodPost, "/urlshortner/api/create", string(body), http.StatusCreated, url)
 	})
-	t.Run("CreateShortenUrlFailure", func(t *testing.T) {
+	t.Run("CreateShortenUrlDecodeRequestFailed", func(t *testing.T) {
 		tests.ExecuteAndParseJSON(t, router, http.MethodPost, "/urlshortner/api/create", "", http.StatusInternalServerError, url)
+	})
+	t.Run("CreateShortenUrlFailure", func(t *testing.T) {
+		encodeUrlAndStore = func(input entity.URL) (string, error) {
+			return "", errors.New("Failed to create/store shorten URL")
+		}
+		tests.ExecuteAndParseJSON(t, router, http.MethodPost, "/urlshortner/api/create", string(body), http.StatusInternalServerError, url)
 	})
 	os.Remove("data.txt")
 }
