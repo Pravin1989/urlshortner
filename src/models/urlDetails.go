@@ -4,16 +4,19 @@ import (
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 
+	"github.com/google/uuid"
 	"github.com/urlshortner/src/entity"
 )
 
 const (
-	baseURL  = "http://urlshortner.com/"
+	baseURL  = "http://localhost:8090/urlshortner/api/"
 	filename = "data.txt"
 )
 
@@ -25,7 +28,7 @@ var (
 
 // This method encode URL and store inside file
 func EncodeUrlAndStore(input entity.URL) (string, error) {
-	urlsMap, readErr := ReadFromFile()
+	urlsMap, readErr := readFromFile()
 	if readErr != nil {
 		return "", readErr
 	}
@@ -33,16 +36,27 @@ func EncodeUrlAndStore(input entity.URL) (string, error) {
 	if isExist {
 		return value, nil
 	}
-	encodedValueToStore := Encode(input)
-	urlsMap[encodedValueToStore] = input.URL
-	if writeErr := WriteToFile(urlsMap); writeErr != nil {
+	encodedValueToStore, _ := uuid.NewUUID()
+	urlsMap[encodedValueToStore.String()] = input.URL
+	if writeErr := writeToFile(urlsMap); writeErr != nil {
 		return "", writeErr
 	}
-	return baseURL + encodedValueToStore, nil
+	return baseURL + encodedValueToStore.String(), nil
+}
+func GetDecodedUrl(key string) (string, error, int) {
+	urlsMap, readErr := readFromFile()
+	if readErr != nil {
+		return "", readErr, http.StatusInternalServerError
+	}
+	value, isExist := urlsMap[key]
+	if isExist {
+		return value, nil, http.StatusOK
+	}
+	return "", errors.New("The required url not found"), http.StatusNotFound
 }
 
 // This method encode URL
-func Encode(input entity.URL) string {
+func encode(input entity.URL) string {
 	hasher := sha1.New()
 	hasher.Write([]byte(input.URL))
 	encodedValue := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
@@ -50,7 +64,7 @@ func Encode(input entity.URL) string {
 }
 
 // This method write to file
-func WriteToFile(data map[string]string) error {
+func writeToFile(data map[string]string) error {
 	file, fileCreateError := os.Create(filename)
 	if fileCreateError != nil {
 		log.Printf("Failed creating file: %s", fileCreateError)
@@ -72,7 +86,7 @@ func WriteToFile(data map[string]string) error {
 }
 
 // This method read from file
-func ReadFromFile() (map[string]string, error) {
+func readFromFile() (map[string]string, error) {
 	data, readError := readFile(filename)
 	myMap := make(map[string]string)
 	if readError != nil {

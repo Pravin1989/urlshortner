@@ -15,6 +15,7 @@ const (
 
 var (
 	handlePostEncodeUrl = handlers.HandlePostEncodeUrl
+	handleGetEncodeUrl  = handlers.HandleOpenEncodedUrl
 )
 
 //This method add routes and start server
@@ -36,4 +37,5 @@ func loadRoutes() *mux.Router {
 //Regiter API methods inside router
 func registerApiRoutes(r *mux.Router) {
 	r.HandleFunc("/create", handlePostEncodeUrl).Methods(http.MethodPost)
+	r.HandleFunc("/{uniqueId}", handleGetEncodeUrl).Methods(http.MethodGet)
 }

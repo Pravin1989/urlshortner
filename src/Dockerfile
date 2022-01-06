@@ -4,7 +4,7 @@ FROM golang:1.16-alpine
 WORKDIR /urlshortner-service
 
 # Copy go mod and sum files
-COPY go.mod go.sum ./
+COPY go.mod ./
 
 # Download all dependencies.
 RUN go mod download
