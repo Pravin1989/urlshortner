@@ -1,8 +1,6 @@
 package models
 
 import (
-	"crypto/sha1"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -53,14 +51,6 @@ func GetDecodedUrl(key string) (string, error, int) {
 		return value, nil, http.StatusOK
 	}
 	return "", errors.New("The required url not found"), http.StatusNotFound
-}
-
-// This method encode URL
-func encode(input entity.URL) string {
-	hasher := sha1.New()
-	hasher.Write([]byte(input.URL))
-	encodedValue := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
-	return encodedValue[0:6]
 }
 
 // This method write to file
